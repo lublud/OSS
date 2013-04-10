@@ -1,9 +1,15 @@
+/**
+ *
+ * @file: Include.h
+ *
+ * @author: Tom CHASSAGNE && Ludovic LUBEIGT
+ *
+ * @date: 10/04/13
+ *
+ * @brief: Inclusion des fichiers pour la compilation
+ *
+**/
 
-#include <stdio.h>
-#include <stdlib.h>
 
+#include "Affichage.c"
 
-#include "Declaration.h"
-
-#include "AnalyseurSyntaxique.c"
-#include "AnalyseurLexical.c"
