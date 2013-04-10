@@ -11,6 +11,31 @@
  **/
 
 #include <stdio.h>
+#include <unistd.h>
+#include <stdlib.h>
+
+void Initialisation (unsigned *TailleMemoireVive, unsigned *TailleMemoireVirtuelle,
+					 unsigned *TailleCadrePages, unsigned *Quantum)
+{
+	//char ValeurEntree[128];
+
+	printf ("Entrez la taille de la mémoire vive : ");
+	scanf ("%d", TailleMemoireVive);
+	fflush (stdin);
+
+	printf ("Entrez la taille de la mémoire virtuelle : ");
+	scanf ("%d", TailleMemoireVirtuelle);
+	fflush (stdin);
+
+	printf ("Entrez la taille des cadres de page : ");
+	scanf ("%d", TailleCadrePages);
+	fflush (stdin);
+
+	printf ("Entrez le quantum pour l'ordonnancement : ");
+	scanf ("%d", Quantum);
+	fflush (stdin);
+
+} // Initialisation ()
 
 int main(int argc, const char *argv[])
 {
@@ -21,6 +46,9 @@ int main(int argc, const char *argv[])
 	}
 
 	int pFils;
+	unsigned TailleMemoireVive, TailleMemoireVirtuelle, TailleCadrePages, Quantum;
+
+	Initialisation (&TailleMemoireVive, &TailleMemoireVirtuelle, &TailleCadrePages, &Quantum);
 
 	if ( (pFils = fork ()) < 0)
 	{
@@ -28,5 +56,11 @@ int main(int argc, const char *argv[])
 		exit (1);
 	}
 
+	if (0 == pFils) // Fils
+	{
+		// ToDo
+	}
+	// Père
+
 	return 0;
-}
+} // main ()
