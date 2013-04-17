@@ -11,12 +11,13 @@
  **/
 
 
-SProcessus * CreerProcessus (unsigned DateSoum, unsigned DureeExec)
+SProcessus * CreerProcessus (unsigned DureeExec, unsigned Taille)
 {
 	SProcessus * Proc = (SProcessus *) malloc (sizeof (SProcessus));
 
-	Proc->DateSoumission = DateSoum;
-	Proc->DureeExecution = DureeExec;
+	Proc->DateSoumission; // = ... ?
+	Proc->DureeExec = DureeExec;
+	Proc->Taille = Taille;
 	Proc->Priorite = 0;
 	Proc->NbAccesProc = 0;
 

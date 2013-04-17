@@ -13,7 +13,8 @@
 typedef struct SProcessus
 {
 	unsigned DateSoumission;
-	unsigned DureeExecution;
+	unsigned DureeExec;
+	unsigned Taille;
 
 	unsigned NbAccesProc;
 	unsigned Priorite;

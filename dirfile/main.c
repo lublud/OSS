@@ -21,6 +21,7 @@ void CalculDuNombreDeCadre ()
 
 } // CalculDuNombreDeCadre ()
 
+
 int main(int argc, const char *argv[])
 {
 	if (argc != 1)
@@ -35,7 +36,10 @@ int main(int argc, const char *argv[])
 
 	printf ("\n\nCalculating page frame's number ...\n");
 	CalculDuNombreDeCadre ();
+	
+	AfficheMenuChoix ();
 
+	/*
 	if ( (pFils = fork ()) < 0)
 	{
 		perror ("fork()");
@@ -47,6 +51,8 @@ int main(int argc, const char *argv[])
 		// ToDo
 	}
 	// Père
+	*/
 
 	return 0;
+
 } // main ()

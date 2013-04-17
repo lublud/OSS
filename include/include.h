@@ -19,5 +19,5 @@
 #include "Processus.h"
 #include "DeclarationVariablesGlobales.h"
 
-#include "../dirfile/Affichage.c"
 #include "../dirfile/Processus.c"
+#include "../dirfile/Affichage.c"
