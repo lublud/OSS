@@ -16,6 +16,8 @@
 #include <stdlib.h>
 #include <ctype.h>
 
+#include "Processus.h"
 #include "DeclarationVariablesGlobales.h"
 
 #include "../dirfile/Affichage.c"
+#include "../dirfile/Processus.c"
