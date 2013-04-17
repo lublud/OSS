@@ -17,10 +17,10 @@ int MenuChoix ()
 {
 	char Rep [64];
 	
-	printf ("OSS - Operating System Simulator\n");
-	printf ("1 - Nouveau processus\n");
-	printf ("2 - File d'attente de processus\n");
-	printf ("3 - Affichage de la mémoire\n");
+	printf ("=== OSS - Operating System Simulator ===\n");
+	printf ("1 - New process\n");
+	printf ("2 - Process(es) in the run queue\n");
+	printf ("3 - Diplay memory\n");
 	printf ("Choix : ");
 
 	fflush (stdin);

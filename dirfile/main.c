@@ -13,27 +13,78 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>
+#include <ctype.h>
 
 void Initialisation (unsigned *TailleMemoireVive, unsigned *TailleMemoireVirtuelle,
 					 unsigned *TailleCadrePages, unsigned *Quantum)
 {
-	//char ValeurEntree[128];
 
-	printf ("Entrez la taille de la mémoire vive : ");
-	scanf ("%d", TailleMemoireVive);
-	fflush (stdin);
+	char rep[32];
+	int i = -1;
 
-	printf ("Entrez la taille de la mémoire virtuelle : ");
-	scanf ("%d", TailleMemoireVirtuelle);
-	fflush (stdin);
+	printf ("Enter RAM size: ");
+	for (gets (&rep); -1 == i;)
+	{
+		for (i = 0; NULL != rep [i]; ++i)
+			if (! isdigit (rep [i]))
+			{
+				i = -1;
+				printf ("It's not a number!\n");
+				printf ("Enter RAM size: ");
+				gets (&rep);
+				break;
+			}
 
-	printf ("Entrez la taille des cadres de page : ");
-	scanf ("%d", TailleCadrePages);
-	fflush (stdin);
+	}
+	TailleMemoireVive = atoi (&rep);
 
-	printf ("Entrez le quantum pour l'ordonnancement : ");
-	scanf ("%d", Quantum);
-	fflush (stdin);
+	i = -1;
+	printf ("Enter virtual memory size: ");
+	for (gets (&rep); -1 == i;)
+	{
+		for (i = 0; NULL != rep [i]; ++i)
+			if (! isdigit (rep [i]))
+			{
+				i = -1;
+				printf ("It's not a number!\n");
+				printf ("Enter virtual memory size: ");
+				gets (&rep);
+				break;
+			}
+	}
+	TailleMemoireVirtuelle = atoi (&rep);
+
+	i = -1;
+	printf ("Enter frames size: ");
+	for (gets (&rep); -1 == i;)
+	{
+		for (i = 0; NULL != rep [i]; ++i)
+			if (! isdigit (rep [i]))
+			{
+				i = -1;
+				printf ("It's not a number!\n");
+				printf ("Enter frames size: ");
+				gets (&rep);
+				break;
+			}
+	}
+	TailleCadrePages = atoi (&rep);
+
+	i = -1;
+	printf ("Enter quantum: ");
+	for (gets (&rep); -1 == i;)
+	{
+		for (i = 0; NULL != rep [i]; ++i)
+			if (! isdigit (rep [i]))
+			{
+				i = -1;
+				printf ("It's not a number!\n");
+				printf ("Enter quantum: ");
+				gets (&rep);
+				break;
+			}
+	}
+	Quantum = atoi (&rep);
 
 } // Initialisation ()
 
