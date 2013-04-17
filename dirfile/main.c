@@ -10,83 +10,16 @@
  *
  **/
 
-#include <stdio.h>
-#include <unistd.h>
-#include <stdlib.h>
-#include <ctype.h>
+#include "include.h"
 
-void Initialisation (unsigned *TailleMemoireVive, unsigned *TailleMemoireVirtuelle,
-					 unsigned *TailleCadrePages, unsigned *Quantum)
+void CalculDuNombreDeCadre ()
 {
+	NombreCadreMemoireVive = TailleMemoireVive / TailleCadrePages;
+	printf ("RAM's creation (%d frame(s))\n", NombreCadreMemoireVive);
+	NombreCadreMemoireVirtuelle = TailleMemoireVirtuelle / TailleCadrePages;
+	printf ("Virtual memory's creation (%d frame(s))\n", NombreCadreMemoireVirtuelle);
 
-	char rep[32];
-	int i = -1;
-
-	printf ("Enter RAM size: ");
-	for (gets (&rep); -1 == i;)
-	{
-		for (i = 0; NULL != rep [i]; ++i)
-			if (! isdigit (rep [i]))
-			{
-				i = -1;
-				printf ("It's not a number!\n");
-				printf ("Enter RAM size: ");
-				gets (&rep);
-				break;
-			}
-
-	}
-	TailleMemoireVive = atoi (&rep);
-
-	i = -1;
-	printf ("Enter virtual memory size: ");
-	for (gets (&rep); -1 == i;)
-	{
-		for (i = 0; NULL != rep [i]; ++i)
-			if (! isdigit (rep [i]))
-			{
-				i = -1;
-				printf ("It's not a number!\n");
-				printf ("Enter virtual memory size: ");
-				gets (&rep);
-				break;
-			}
-	}
-	TailleMemoireVirtuelle = atoi (&rep);
-
-	i = -1;
-	printf ("Enter frames size: ");
-	for (gets (&rep); -1 == i;)
-	{
-		for (i = 0; NULL != rep [i]; ++i)
-			if (! isdigit (rep [i]))
-			{
-				i = -1;
-				printf ("It's not a number!\n");
-				printf ("Enter frames size: ");
-				gets (&rep);
-				break;
-			}
-	}
-	TailleCadrePages = atoi (&rep);
-
-	i = -1;
-	printf ("Enter quantum: ");
-	for (gets (&rep); -1 == i;)
-	{
-		for (i = 0; NULL != rep [i]; ++i)
-			if (! isdigit (rep [i]))
-			{
-				i = -1;
-				printf ("It's not a number!\n");
-				printf ("Enter quantum: ");
-				gets (&rep);
-				break;
-			}
-	}
-	Quantum = atoi (&rep);
-
-} // Initialisation ()
+} // CalculDuNombreDeCadre ()
 
 int main(int argc, const char *argv[])
 {
@@ -97,9 +30,11 @@ int main(int argc, const char *argv[])
 	}
 
 	int pFils;
-	unsigned TailleMemoireVive, TailleMemoireVirtuelle, TailleCadrePages, Quantum;
 
-	Initialisation (&TailleMemoireVive, &TailleMemoireVirtuelle, &TailleCadrePages, &Quantum);
+	Initialisation ();
+
+	printf ("\n\nCalculation of page frame's number ...\n");
+	CalculDuNombreDeCadre ();
 
 	if ( (pFils = fork ()) < 0)
 	{
