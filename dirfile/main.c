@@ -15,9 +15,9 @@
 void CalculDuNombreDeCadre ()
 {
 	NombreCadreMemoireVive = TailleMemoireVive / TailleCadrePages;
-	printf ("RAM's creation (%d frame(s))\n", NombreCadreMemoireVive);
+	printf ("RAM creation (%d frame(s))\n", NombreCadreMemoireVive);
 	NombreCadreMemoireVirtuelle = TailleMemoireVirtuelle / TailleCadrePages;
-	printf ("Virtual memory's creation (%d frame(s))\n", NombreCadreMemoireVirtuelle);
+	printf ("Virtual memory creation (%d frame(s))\n", NombreCadreMemoireVirtuelle);
 
 } // CalculDuNombreDeCadre ()
 
@@ -25,7 +25,7 @@ int main(int argc, const char *argv[])
 {
 	if (argc != 1)
 	{
-		fprintf (stderr, "Error: none argument expected.\n");
+		fprintf (stderr, "Error: no argument expected.\n");
 		return 1;
 	}
 
@@ -33,7 +33,7 @@ int main(int argc, const char *argv[])
 
 	Initialisation ();
 
-	printf ("\n\nCalculation of page frame's number ...\n");
+	printf ("\n\nCalculating page frame's number ...\n");
 	CalculDuNombreDeCadre ();
 
 	if ( (pFils = fork ()) < 0)

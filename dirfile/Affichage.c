@@ -18,7 +18,7 @@ int MenuChoix ()
 	printf ("1 - New process\n");
 	printf ("2 - Process(es) in the run queue\n");
 	printf ("3 - Diplay memory\n");
-	printf ("Choix : ");
+	printf ("Choice : ");
 
 	fflush (stdin);
 	gets (&Rep);
