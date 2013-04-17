@@ -14,4 +14,9 @@
 unsigned TailleMemoireVive, TailleMemoireVirtuelle, TailleCadrePages, Quantum;
 unsigned NombreCadreMemoireVive, NombreCadreMemoireVirtuelle;
 
+SProcessusEnMemoire **CadrePageMemVive;
+unsigned *CadrePageMemViveRestante;
+SProcessusEnMemoire **CadrePageMemVirtuelle;
+unsigned *CadrePageMemVirtuelleRestante;
+
 SProcessus * Proc [256];

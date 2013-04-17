@@ -25,6 +25,16 @@ SProcessus * CreerProcessus (unsigned DureeExec, unsigned Taille)
 
 } // CreerProcessus ()
 
+SProcessusEnMemoire *AjouterProcessusEnMemoire (SProcessus *proc)
+{
+	SProcessusEnMemoire *ProcEnMemoire = (SProcessusEnMemoire *) malloc (sizeof (SProcessusEnMemoire));
+
+	ProcEnMemoire->Proc = proc;
+
+	return ProcEnMemoire;
+
+} // AjouterProcessusEnMemoire ()
+
 void RecalculerPriorite ()
 {
 	for (int i = 0; i < 255; ++i)

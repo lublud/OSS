@@ -51,6 +51,7 @@ void ChoixNouveauProc ()
 	
 	char rep[32];
 	int i = -1;
+	int NombreDePage;
 	
 	printf ("Enter processus duration: ");
 	for (gets (&rep); -1 == i;)
@@ -94,10 +95,82 @@ void ChoixNouveauProc ()
 			break;
 		}
 	}
+
+	NombreDePage = AjouterNouveauProcessusEnMemoire (Proc[i]);
+	if (-1 == NombreDePage)
+	{
+		free (Proc [i]);
+		return;
+	}
+	Proc[i]->NbPageEnMemoire = NombreDePage;
 	
-	printf("   Process %d created with duration=%d and size=%d (? pages)\n", i, Proc[i]->DureeExec, Proc[i]->Taille);
+	printf("\nProcess %d created with duration=%d and size=%d (%d pages)\n",
+			i, Proc[i]->DureeExec, Proc[i]->Taille, Proc[i]->NbPageEnMemoire);
 	
 } // ChoixNouveauProc ()
+
+int AjouterNouveauProcessusEnMemoire (SProcessus *proc)
+{
+	unsigned NombreDePage, i, j, PremierCadre;
+	int TailleProcTmp = proc->Taille;
+	PremierCadre = 0;
+	for (i = 0; i < NombreCadreMemoireVirtuelle; ++i)
+	{
+		if (TailleCadrePages == CadrePageMemVirtuelleRestante[i] ||
+			TailleProcTmp <= CadrePageMemVirtuelleRestante [i])
+			TailleProcTmp -= CadrePageMemVirtuelleRestante[i];
+		else
+		{
+			PremierCadre = i;
+			TailleProcTmp = proc->Taille;
+		}
+
+		if (TailleProcTmp <= 0)
+			break;
+	}
+
+	if (i == NombreCadreMemoireVirtuelle && TailleProcTmp > CadrePageMemVirtuelleRestante [i])
+	{
+		printf ("Error: Out of virtual memory\n");
+		return -1;
+	}
+
+	TailleProcTmp = proc->Taille;
+
+	SProcessusEnMemoire *ProcTmp;
+	NombreDePage = 0;
+	for (j = PremierCadre; 0 != TailleProcTmp; ++j)
+	{
+		ProcTmp = CadrePageMemVirtuelle[j];
+		if (NULL != ProcTmp)
+		{
+			for (; ; ProcTmp = ProcTmp->ProcSuivantEnMemoire)
+				if (NULL == ProcTmp->ProcSuivantEnMemoire)
+					break;
+			ProcTmp->ProcSuivantEnMemoire = AjouterProcessusEnMemoire (proc);
+		}
+		else
+			ProcTmp = AjouterProcessusEnMemoire (proc);
+
+
+		if (TailleProcTmp > CadrePageMemVirtuelleRestante[j])
+		{
+			TailleProcTmp -= CadrePageMemVirtuelleRestante[j];
+			CadrePageMemVirtuelleRestante[j] -= CadrePageMemVirtuelleRestante[j];
+		}
+		else
+		{
+			CadrePageMemVirtuelleRestante[j] -= TailleProcTmp;
+			TailleProcTmp = 0;
+		}
+
+		++NombreDePage;
+
+	}
+
+	return NombreDePage;
+
+} // AjouterNouveauProcessusEnMemoire ()
 
 void AfficheTabProc ()
 {

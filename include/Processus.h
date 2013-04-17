@@ -18,6 +18,13 @@ typedef struct SProcessus
 
 	unsigned NbAccesProc;
 	unsigned Priorite;
+	unsigned NbPageEnMemoire;
 
 } SProcessus;
 
+typedef struct SProcessusEnMemoire
+{
+	SProcessus *Proc;
+	struct SProcessusEnMemoire *ProcSuivantEnMemoire;
+
+} SProcessusEnMemoire;
