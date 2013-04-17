@@ -41,6 +41,7 @@ void AfficheMenuChoix ()
 		if (Rep == 0) continue;
 		else if (Rep == 1) ChoixNouveauProc();
 		else if (Rep == 2) AfficheTabProc();
+		else if (Rep == 3) AfficherEtatMemoire ();
 	}
 	
 } // AfficheMenuChoix ()
@@ -91,7 +92,7 @@ void ChoixNouveauProc ()
 	{
 		if (Proc[i] == NULL)
 		{
-			Proc[i] = CreerProcessus (Duree, Taille);
+			Proc[i] = CreerProcessus (Duree, Taille, i);
 			break;
 		}
 	}
@@ -150,7 +151,7 @@ int AjouterNouveauProcessusEnMemoire (SProcessus *proc)
 			ProcTmp->ProcSuivantEnMemoire = AjouterProcessusEnMemoire (proc);
 		}
 		else
-			ProcTmp = AjouterProcessusEnMemoire (proc);
+			CadrePageMemVirtuelle[j] = AjouterProcessusEnMemoire (proc);
 
 
 		if (TailleProcTmp > CadrePageMemVirtuelleRestante[j])
@@ -176,13 +177,42 @@ void AfficheTabProc ()
 {
 	printf("Current processes:\n");
 	
-	for (int i = 0; i < 255; ++i)
+	for (int i = 0; i < 256; ++i)
 	{
 		if (Proc[i] != NULL)
 			printf ("   Process [%d]: duration=%d and size=%d\n", i, Proc[i]->DureeExec, Proc[i]->Taille);
 	}
 	
 } // AfficheTabProc ()
+
+void AfficherEtatMemoire ()
+{
+	SProcessusEnMemoire *ProcTmp;
+	unsigned PageProcessus[256], i;
+	for (i = 0; i < 256; ++i)
+		PageProcessus[i] = 0;
+
+	printf ("Virtual memory (%d frame(s))\n(frame, process's ID, process's page)\n",
+				NombreCadreMemoireVirtuelle);
+
+	for (i = 0; i < NombreCadreMemoireVirtuelle;)
+	{
+		ProcTmp = CadrePageMemVirtuelle[i];
+		if (NULL == ProcTmp)
+			printf ("%d:\t\t", i);
+		else
+			for (; ; ProcTmp = ProcTmp->ProcSuivantEnMemoire)
+			{
+				printf ("%d:  %d, %d\t", i, ProcTmp->Proc->IDProc,
+						PageProcessus[ProcTmp->Proc->IDProc]++);
+				if (NULL == ProcTmp->ProcSuivantEnMemoire)
+					break;
+			}
+		if ( ! (++i % 5) )
+			printf ("\n");
+	}
+
+} // AfficherEtatMemoire ()
 
 void Initialisation ()
 {

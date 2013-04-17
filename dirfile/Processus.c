@@ -11,10 +11,11 @@
  **/
 
 
-SProcessus * CreerProcessus (unsigned DureeExec, unsigned Taille)
+SProcessus * CreerProcessus (unsigned DureeExec, unsigned Taille, unsigned IDProc)
 {
 	SProcessus * Proc = (SProcessus *) malloc (sizeof (SProcessus));
 
+	Proc->IDProc = IDProc;
 	Proc->DateSoumission; // = ... ?
 	Proc->DureeExec = DureeExec;
 	Proc->Taille = Taille;

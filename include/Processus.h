@@ -12,6 +12,7 @@
 
 typedef struct SProcessus
 {
+	unsigned IDProc;
 	unsigned DateSoumission;
 	unsigned DureeExec;
 	unsigned Taille;
