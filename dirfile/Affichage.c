@@ -131,6 +131,8 @@ int AjouterNouveauProcessusEnMemoire (SProcessus *proc)
 		CadrePageMemVirtuelle[i] = proc;
 		++NombreDePage;
 
+		--NbCadreMemVirtuelleLibre;
+
 
 		if (TailleProcTmp > CadrePageMemVirtuelleRestante[i])
 		{
