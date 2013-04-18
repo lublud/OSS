@@ -15,14 +15,18 @@
 void CalculDuNombreDeCadre ()
 {
 	unsigned i;
+	double result;
 
 	NombreCadreMemoireVive = TailleMemoireVive / TailleCadrePages;
 	printf ("RAM creation (%d frame(s))\n", NombreCadreMemoireVive);
-	if (TailleMemoireVive % TailleCadrePages)
-		++NombreCadreMemoireVive;
 
-	CadrePageMemVive = (SProcessusEnMemoire *)
-					malloc (NombreCadreMemoireVive * sizeof (SProcessusEnMemoire));
+	/*
+	if ()
+		++NombreCadreMemoireVive;
+	*/
+
+	CadrePageMemVive = (SProcessus *)
+					malloc (NombreCadreMemoireVive * sizeof (SProcessus));
 	CadrePageMemViveRestante = (unsigned *) malloc (NombreCadreMemoireVive * sizeof (unsigned));
 
 	for (i = 0; i < NombreCadreMemoireVive; ++i)
@@ -31,12 +35,16 @@ void CalculDuNombreDeCadre ()
 
 	NombreCadreMemoireVirtuelle = TailleMemoireVirtuelle / TailleCadrePages;
 	printf ("Virtual memory creation (%d frame(s))\n", NombreCadreMemoireVirtuelle);
-	if (TailleMemoireVirtuelle % TailleCadrePages)
-		++NombreCadreMemoireVirtuelle;
 
-	CadrePageMemVirtuelle = (SProcessusEnMemoire *)
-					malloc (NombreCadreMemoireVirtuelle * sizeof (SProcessusEnMemoire));
+	/*
+	if ()
+		++NombreCadreMemoireVirtuelle;
+	*/
+
+	CadrePageMemVirtuelle = (SProcessus *)
+					malloc (NombreCadreMemoireVirtuelle * sizeof (SProcessus));
 	CadrePageMemVirtuelleRestante = (unsigned *) malloc (NombreCadreMemoireVirtuelle * sizeof (unsigned));
+	NbCadreMemVirtuelleLibre = NombreCadreMemoireVirtuelle;
 
 	for (i = 0; i < NombreCadreMemoireVirtuelle; ++i)
 		CadrePageMemVirtuelleRestante [i] = TailleCadrePages;

@@ -112,60 +112,37 @@ void ChoixNouveauProc ()
 
 int AjouterNouveauProcessusEnMemoire (SProcessus *proc)
 {
-	unsigned NombreDePage, i, j, PremierCadre;
+	unsigned NombreDePage, i, PremierCadre;
 	int TailleProcTmp = proc->Taille;
-	PremierCadre = 0;
-	for (i = 0; i < NombreCadreMemoireVirtuelle; ++i)
-	{
-		if (TailleCadrePages == CadrePageMemVirtuelleRestante[i] ||
-			TailleProcTmp <= CadrePageMemVirtuelleRestante [i])
-			TailleProcTmp -= CadrePageMemVirtuelleRestante[i];
-		else
-		{
-			PremierCadre = i;
-			TailleProcTmp = proc->Taille;
-		}
 
-		if (TailleProcTmp <= 0)
-			break;
-	}
-
-	if (i == NombreCadreMemoireVirtuelle && TailleProcTmp > CadrePageMemVirtuelleRestante [i])
+	if ( (NbCadreMemVirtuelleLibre * TailleCadrePages) < proc->Taille )
 	{
-		printf ("Error: Out of virtual memory\n");
+		fprintf (stderr, "\033[31m Error: Out of virtual memory\033[0m\n");
 		return -1;
 	}
 
-	TailleProcTmp = proc->Taille;
 
-	SProcessusEnMemoire *ProcTmp;
 	NombreDePage = 0;
-	for (j = PremierCadre; 0 != TailleProcTmp; ++j)
+	for (i = 0; 0 != TailleProcTmp; ++i)
 	{
-		ProcTmp = CadrePageMemVirtuelle[j];
-		if (NULL != ProcTmp)
-		{
-			for (; ; ProcTmp = ProcTmp->ProcSuivantEnMemoire)
-				if (NULL == ProcTmp->ProcSuivantEnMemoire)
-					break;
-			ProcTmp->ProcSuivantEnMemoire = AjouterProcessusEnMemoire (proc);
-		}
-		else
-			CadrePageMemVirtuelle[j] = AjouterProcessusEnMemoire (proc);
+		if (NULL != CadrePageMemVirtuelle[i])
+			continue;
+
+		CadrePageMemVirtuelle[i] = proc;
+		++NombreDePage;
 
 
-		if (TailleProcTmp > CadrePageMemVirtuelleRestante[j])
+		if (TailleProcTmp > CadrePageMemVirtuelleRestante[i])
 		{
-			TailleProcTmp -= CadrePageMemVirtuelleRestante[j];
-			CadrePageMemVirtuelleRestante[j] -= CadrePageMemVirtuelleRestante[j];
+			TailleProcTmp -= CadrePageMemVirtuelleRestante[i];
+			CadrePageMemVirtuelleRestante[i] -= CadrePageMemVirtuelleRestante[i];
 		}
 		else
 		{
-			CadrePageMemVirtuelleRestante[j] -= TailleProcTmp;
+			CadrePageMemVirtuelleRestante[i] -= TailleProcTmp;
 			TailleProcTmp = 0;
 		}
 
-		++NombreDePage;
 
 	}
 
@@ -187,8 +164,8 @@ void AfficheTabProc ()
 
 void AfficherEtatMemoire ()
 {
-	SProcessusEnMemoire *ProcTmp;
 	unsigned PageProcessus[256], i;
+
 	for (i = 0; i < 256; ++i)
 		PageProcessus[i] = 0;
 
@@ -197,18 +174,13 @@ void AfficherEtatMemoire ()
 
 	for (i = 0; i < NombreCadreMemoireVirtuelle;)
 	{
-		ProcTmp = CadrePageMemVirtuelle[i];
-		if (NULL == ProcTmp)
-			printf ("%d:\t\t", i);
+		if (NULL == CadrePageMemVirtuelle[i])
+			printf ("%4d:        ", i);
 		else
-			for (; ; ProcTmp = ProcTmp->ProcSuivantEnMemoire)
-			{
-				printf ("%d:  %d, %d\t", i, ProcTmp->Proc->IDProc,
-						PageProcessus[ProcTmp->Proc->IDProc]++);
-				if (NULL == ProcTmp->ProcSuivantEnMemoire)
-					break;
-			}
-		if ( ! (++i % 5) )
+				printf ("%4d: %2d, %2d ", i, CadrePageMemVirtuelle[i]->IDProc,
+						PageProcessus[CadrePageMemVirtuelle[i]->IDProc]++);
+
+		if ( ! (++i % 4) )
 			printf ("\n");
 	}
 

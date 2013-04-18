@@ -22,10 +22,3 @@ typedef struct SProcessus
 	unsigned NbPageEnMemoire;
 
 } SProcessus;
-
-typedef struct SProcessusEnMemoire
-{
-	SProcessus *Proc;
-	struct SProcessusEnMemoire *ProcSuivantEnMemoire;
-
-} SProcessusEnMemoire;
