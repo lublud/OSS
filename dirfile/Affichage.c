@@ -98,6 +98,7 @@ void ChoixNouveauProc ()
 	}
 
 	NombreDePage = AjouterNouveauProcessusEnMemoire (Proc[i]);
+	
 	if (-1 == NombreDePage)
 	{
 		free (Proc [i]);
@@ -109,48 +110,6 @@ void ChoixNouveauProc ()
 			i, Proc[i]->DureeExec, Proc[i]->Taille, Proc[i]->NbPageEnMemoire);
 	
 } // ChoixNouveauProc ()
-
-int AjouterNouveauProcessusEnMemoire (SProcessus *proc)
-{
-	unsigned NombreDePage, i, PremierCadre;
-	int TailleProcTmp = proc->Taille;
-
-	if ( (NbCadreMemVirtuelleLibre * TailleCadrePages) < proc->Taille )
-	{
-		fprintf (stderr, "\033[31m Error: Out of virtual memory\033[0m\n");
-		return -1;
-	}
-
-
-	NombreDePage = 0;
-	for (i = 0; 0 != TailleProcTmp; ++i)
-	{
-		if (NULL != CadrePageMemVirtuelle[i])
-			continue;
-
-		CadrePageMemVirtuelle[i] = proc;
-		++NombreDePage;
-
-		--NbCadreMemVirtuelleLibre;
-
-
-		if (TailleProcTmp > CadrePageMemVirtuelleRestante[i])
-		{
-			TailleProcTmp -= CadrePageMemVirtuelleRestante[i];
-			CadrePageMemVirtuelleRestante[i] -= CadrePageMemVirtuelleRestante[i];
-		}
-		else
-		{
-			CadrePageMemVirtuelleRestante[i] -= TailleProcTmp;
-			TailleProcTmp = 0;
-		}
-
-
-	}
-
-	return NombreDePage;
-
-} // AjouterNouveauProcessusEnMemoire ()
 
 void AfficheTabProc ()
 {
@@ -171,18 +130,39 @@ void AfficherEtatMemoire ()
 	for (i = 0; i < 256; ++i)
 		PageProcessus[i] = 0;
 
+	printf ("RAM memory (%d frame(s))\n(frame, process's ID, process's page)\n",
+				NombreCadreMemoireVive);
+
+	for (i = 0; i < NombreCadreMemoireVive; )
+	{
+		//if (NULL == CadrePageMemVive[i])
+		if (NULL == MemVive[i])
+			printf ("%4d:        ", i);
+		else
+		//	printf ("%4d: %2d, %2d ", i, CadrePageMemVive[i]->IDProc,
+		//				PageProcessus[CadrePageMemVive[i]->IDProc]++);
+			printf ("%4d: %2d, %2d ", i, MemVive[i]->IDProc, MemVive[i]->PageProc);
+
+		if ( ! (++i % 5) )
+			printf ("\n");
+	}
+	
+	printf("\n");
+	
 	printf ("Virtual memory (%d frame(s))\n(frame, process's ID, process's page)\n",
 				NombreCadreMemoireVirtuelle);
 
-	for (i = 0; i < NombreCadreMemoireVirtuelle;)
+	for (i = 0; i < NombreCadreMemoireVirtuelle; )
 	{
-		if (NULL == CadrePageMemVirtuelle[i])
+		//if (NULL == CadrePageMemVirtuelle[i])
+		if (NULL == MemVirtuelle[i])
 			printf ("%4d:        ", i);
 		else
-				printf ("%4d: %2d, %2d ", i, CadrePageMemVirtuelle[i]->IDProc,
-						PageProcessus[CadrePageMemVirtuelle[i]->IDProc]++);
+		//	printf ("%4d: %2d, %2d ", i, CadrePageMemVirtuelle[i]->IDProc,
+		//				PageProcessus[CadrePageMemVirtuelle[i]->IDProc]++);
+			printf ("%4d: %2d, %2d ", i, MemVirtuelle[i]->IDProc, MemVirtuelle[i]->PageProc);
 
-		if ( ! (++i % 4) )
+		if ( ! (++i % 5) )
 			printf ("\n");
 	}
 

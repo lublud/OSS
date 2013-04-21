@@ -26,7 +26,6 @@ SProcessus * CreerProcessus (unsigned DureeExec, unsigned Taille, unsigned IDPro
 
 } // CreerProcessus ()
 
-
 void RecalculerPriorite ()
 {
 	for (int i = 0; i < 255; ++i)
@@ -36,5 +35,11 @@ void RecalculerPriorite ()
 		Proc[i]->Priorite = (Proc[i]->NbAccesProc - 1) / 2;
 	}
 	
-	
 } // RecalculePriorite ()
+
+void RoundRobin (unsigned Priorite)
+{
+	
+	
+} // RoundRobin ()
+
