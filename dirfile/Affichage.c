@@ -18,6 +18,7 @@ int MenuChoix ()
 	printf ("1 - New process\n");
 	printf ("2 - Process(es) in the run queue\n");
 	printf ("3 - Diplay memory\n");
+	printf ("4 - Exit program\n");
 	printf ("Choice : ");
 
 	fflush (stdin);
@@ -26,24 +27,29 @@ int MenuChoix ()
 	
 	printf("\n");
 
-	if (Choix > 0 && Choix < 4) return Choix;
+	if (Choix > 0 && Choix < 5) return Choix;
 	else return 0;
 
 } // MenuChoix ()
 
 void AfficheMenuChoix ()
 {
-	
+
 	for ( ; ; )
 	{
 		int Rep = MenuChoix ();
-		
+
 		if 		(Rep == 0) continue;
-		else if (Rep == 1) ChoixNouveauProc ();
+		else if (Rep == 1)
+		{
+			ChoixNouveauProc ();
+			NouveauProc = 1;
+		}
 		else if (Rep == 2) AfficheTabProc ();
 		else if (Rep == 3) AfficherEtatMemoire ();
+		else if (Rep == 4) return;
 	}
-	
+
 } // AfficheMenuChoix ()
 
 void ChoixNouveauProc ()
@@ -98,6 +104,7 @@ void ChoixNouveauProc ()
 		}
 	}
 	
+	/*
 	// Cherche une case vide
 	for (i = 0; i < 256; ++i)
 	{
@@ -107,6 +114,7 @@ void ChoixNouveauProc ()
 			break;
 		}
 	}
+	*/
 
 	NombreDePage = AjouterNouveauProcessusEnMemoire (Proc[i]);
 	// Si le proc demande plus de mémoire que disponible
@@ -118,12 +126,14 @@ void ChoixNouveauProc ()
 	
 	// Ajout du processus
 	Proc[i]->NbPageEnMemoire = NombreDePage;
-	ListePriorite[0][i]->NbPageEnMemoire = NombreDePage;
+	//ListePriorite[0][i]->NbPageEnMemoire = NombreDePage;
 	
+	
+	//mutex
 	
 	printf("\nProcess %d created with duration=%d and size=%d (%d pages)\n",
 			i, Proc[i]->DureeExec, Proc[i]->Taille, Proc[i]->NbPageEnMemoire);
-	
+
 } // ChoixNouveauProc ()
 
 void AfficheTabProc ()

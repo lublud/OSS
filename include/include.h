@@ -16,6 +16,7 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include <time.h>
+#include <pthread.h>
 
 #include "Memoire.h"
 #include "Processus.h"

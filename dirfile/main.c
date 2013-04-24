@@ -21,30 +21,19 @@ int main(int argc, const char *argv[])
 		return 1;
 	}
 
-	int pFils;
+	pthread_t ThreadRR;
+	int res;
 
 	Initialisation ();
 
 	printf ("\n\nCalculating page frame's number ...\n");
 	CalculDuNombreDeCadre ();
-	
-	// RoundRobin ();
-	
+
+	res = pthread_create (&ThreadRR, NULL, FilePriorite, NULL);
+
 	AfficheMenuChoix ();
 
-	/*
-	if ( (pFils = fork ()) < 0)
-	{
-		perror ("fork()");
-		exit (1);
-	}
-
-	if (0 == pFils) // Fils
-	{
-		// ToDo
-	}
-	// Père
-	*/
+	pthread_cancel (ThreadRR);
 
 	return 0;
 

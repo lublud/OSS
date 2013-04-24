@@ -119,8 +119,9 @@ void CalculDuNombreDeCadre ()
 void AccesMemProc (SProcessus * Proc)
 {
 	srand (time (NULL));
-	unsigned PageChoisie = random () % Proc->NbPageEnMemoire + 1;
-	
+	unsigned PageChoisie = random () % Proc->NbPageEnMemoire;// + 1;
+
+	printf ("PageChoisie = %d\n", PageChoisie);
 	printf("Process %d executing page %d\n", Proc->IDProc, PageChoisie);
 	
 	int i =  0;
@@ -136,6 +137,7 @@ void AccesMemProc (SProcessus * Proc)
 	
 	// Algorithme de la seconde chance
 	
+	sleep (1);
 	
 } // AccesMemProc ()
 

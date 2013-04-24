@@ -14,7 +14,7 @@ COMPILER = gcc -I$(INCLUDE) -Wall -w -g -ansi -pedantic -std=c99 -Werror $*.c
 all: OSS
 
 OSS: 
-	gcc -o OSS.run -I$(INCLUDE) -Wall -w -g -ansi -pedantic -std=c99 -Werror main.c
+	gcc -o OSS.run -I$(INCLUDE) -pthread -w -g -ansi -pedantic -std=c99 -Werror main.c
 
 # Edition de liens
 #
