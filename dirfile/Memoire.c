@@ -123,15 +123,19 @@ void AccesMemProc (SProcessus * Proc)
 	
 	printf("Process %d executing page %d\n", Proc->IDProc, PageChoisie);
 	
+	int i =  0;
 	
-	// REMPLACER par l'algorithme de la seconde chance
-	for (int i = 0; i < NombreCadreMemoireVive; ++i)
+	// Premier remplissage
+	for ( ; i < NombreCadreMemoireVive; ++i)
 	{
 		if (MemVive [i] != NULL) continue;
 		
 		MemVive [i]->IDProc = Proc->IDProc;
-		// Cadre page = ...
+		MemVive [i]->PageProc = PageChoisie;
 	}
+	
+	// Algorithme de la seconde chance
+	
 	
 } // AccesMemProc ()
 

@@ -24,4 +24,6 @@ SMemoire ** MemVive;
 SMemoire ** MemVirtuelle;
 
 SProcessus * Proc [256];
-SProcessus * ListePriorite [4][256];
+
+SProcessus * ListePriorite [5][256];
+unsigned * FileAttente [5][256];

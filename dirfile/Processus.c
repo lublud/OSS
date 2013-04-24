@@ -39,7 +39,15 @@ void RecalculerPriorite ()
 
 void RoundRobin (unsigned Priorite)
 {
-	
+	for ( ; ; )
+	{
+		printf("JE SUIS ROUND ROBIN. RESPECT MY AUTHORITY :\n");
+		
+		if (Proc[0] != NULL)
+			printf ("   Process [0]: duration=%d and size=%d\n", Proc[0]->DureeExec, Proc[0]->Taille);
+		
+		sleep (5);
+	}
 	
 } // RoundRobin ()
 

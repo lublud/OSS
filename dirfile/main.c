@@ -28,6 +28,8 @@ int main(int argc, const char *argv[])
 	printf ("\n\nCalculating page frame's number ...\n");
 	CalculDuNombreDeCadre ();
 	
+	// RoundRobin ();
+	
 	AfficheMenuChoix ();
 
 	/*

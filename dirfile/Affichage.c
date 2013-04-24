@@ -38,9 +38,9 @@ void AfficheMenuChoix ()
 	{
 		int Rep = MenuChoix ();
 		
-		if (Rep == 0) continue;
-		else if (Rep == 1) ChoixNouveauProc();
-		else if (Rep == 2) AfficheTabProc();
+		if 		(Rep == 0) continue;
+		else if (Rep == 1) ChoixNouveauProc ();
+		else if (Rep == 2) AfficheTabProc ();
 		else if (Rep == 3) AfficherEtatMemoire ();
 	}
 	
@@ -87,6 +87,7 @@ void ChoixNouveauProc ()
 	}
 	Taille = atoi (&rep);
 	
+	
 	// Cherche une case vide
 	for (i = 0; i < 256; ++i)
 	{
@@ -96,15 +97,29 @@ void ChoixNouveauProc ()
 			break;
 		}
 	}
+	
+	// Cherche une case vide
+	for (i = 0; i < 256; ++i)
+	{
+		if (ListePriorite[0][i] == NULL)
+		{
+			ListePriorite[0][i] = CreerProcessus (Duree, Taille, i);
+			break;
+		}
+	}
 
 	NombreDePage = AjouterNouveauProcessusEnMemoire (Proc[i]);
-	
+	// Si le proc demande plus de mémoire que disponible
 	if (-1 == NombreDePage)
 	{
 		free (Proc [i]);
 		return;
 	}
+	
+	// Ajout du processus
 	Proc[i]->NbPageEnMemoire = NombreDePage;
+	ListePriorite[0][i]->NbPageEnMemoire = NombreDePage;
+	
 	
 	printf("\nProcess %d created with duration=%d and size=%d (%d pages)\n",
 			i, Proc[i]->DureeExec, Proc[i]->Taille, Proc[i]->NbPageEnMemoire);
