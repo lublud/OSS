@@ -73,9 +73,9 @@ void CalculDuNombreDeCadre ()
 
 //	CadrePageMemVive = (SProcessus *)
 //					malloc (NombreCadreMemoireVive * sizeof (SProcessus));
-	
+
 	MemVive = (SMemoire *) malloc (NombreCadreMemoireVive * sizeof (SMemoire));
-	
+
 	CadrePageMemViveRestante = (unsigned *)
 					malloc (NombreCadreMemoireVive * sizeof (unsigned));
 
@@ -98,9 +98,6 @@ void CalculDuNombreDeCadre ()
 
 	printf ("Virtual memory creation (%d frame(s))\n", NombreCadreMemoireVirtuelle);
 
-//	CadrePageMemVirtuelle = (SProcessus *)
-//					malloc (NombreCadreMemoireVirtuelle * sizeof (SProcessus));
-
 	MemVirtuelle = (SMemoire *) malloc (NombreCadreMemoireVirtuelle * sizeof (SMemoire));
 					
 	CadrePageMemVirtuelleRestante = (unsigned *)
@@ -121,7 +118,6 @@ void AccesMemProc (SProcessus * Proc)
 	srand (time (NULL));
 	unsigned PageChoisie = random () %  Proc->NbPageEnMemoire;
 
-	printf ("PageChoisie = %d\n", PageChoisie);
 	printf("Process %d executing page %d\n", Proc->IDProc, PageChoisie);
 
 	int i;
@@ -135,11 +131,13 @@ void AccesMemProc (SProcessus * Proc)
 			MemVive[i]->PageProc = PageChoisie;
 		}
 	}
-	
+
+	++ProcExecute->NbAccesProc;
+
 	// Algorithme de la seconde chance
-	
+
 	sleep (1);
-	
+
 } // AccesMemProc ()
 
 

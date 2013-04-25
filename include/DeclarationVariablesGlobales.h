@@ -15,9 +15,10 @@ unsigned TailleMemoireVive, TailleMemoireVirtuelle, TailleCadrePages, Quantum;
 unsigned NombreCadreMemoireVive, NombreCadreMemoireVirtuelle;
 unsigned NbCadreMemVirtuelleLibre;
 unsigned NbOrdonnancement;
-unsigned CurseurFileAttente = 0;
 unsigned NouveauProc = 0;
 unsigned NbProc = 0;
+
+unsigned CursFileAttente [5];
 
 static pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 
@@ -30,4 +31,3 @@ SMemoire ** MemVirtuelle;
 SProcessus * Proc [256];
 
 SProcessus * ListePriorite [5][256];
-int FileAttente [5][256];

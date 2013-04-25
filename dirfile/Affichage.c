@@ -104,18 +104,6 @@ void ChoixNouveauProc ()
 			break;
 		}
 	}
-	
-	/*
-	// Cherche une case vide
-	for (i = 0; i < 256; ++i)
-	{
-		if (ListePriorite[0][i] == NULL)
-		{
-			ListePriorite[0][i] = CreerProcessus (Duree, Taille, i);
-			break;
-		}
-	}
-	*/
 
 	NombreDePage = AjouterNouveauProcessusEnMemoire (Proc[i]);
 	// Si le proc demande plus de mémoire que disponible
@@ -144,11 +132,10 @@ void AfficheTabProc ()
 	for (int i = 0; i < 5; ++i)
 	{
 		printf("%d\t\t\t", i);
-		for (int j = 0; j < 256; ++j)
+		for (int j = CursFileAttente[i]; j < 256; ++j)
 		{
-			if (FileAttente [i][j] != -1)
-			printf ("%d, ", FileAttente [i][j]);
-			//	printf ("   Process [%d]: duration=%d and size=%d\n", i, Proc[i]->DureeExec, Proc[i]->Taille);
+			if (ListePriorite [i][j] != NULL)
+				printf ("%d, ", ListePriorite [i][j]->IDProc);
 		}
 		printf("\n");
 	}
@@ -186,12 +173,9 @@ void AfficherEtatMemoire ()
 
 	for (i = 0; i < NombreCadreMemoireVirtuelle; )
 	{
-		//if (NULL == CadrePageMemVirtuelle[i])
 		if (NULL == MemVirtuelle[i])
 			printf ("%4d:        ", i);
 		else
-		//	printf ("%4d: %2d, %2d ", i, CadrePageMemVirtuelle[i]->IDProc,
-		//				PageProcessus[CadrePageMemVirtuelle[i]->IDProc]++);
 			printf ("%4d: %2d, %2d ", i, MemVirtuelle[i]->IDProc, MemVirtuelle[i]->PageProc);
 
 		if ( ! (++i % 5) )

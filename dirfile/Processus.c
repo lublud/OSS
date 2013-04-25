@@ -25,75 +25,108 @@ SProcessus * CreerProcessus (unsigned DureeExec, unsigned Taille)
 
 } // CreerProcessus ()
 
+void CopierSProc (SProcessus *dest, SProcessus *src)
+{
+	dest->IDProc		  = src->IDProc;
+	dest->DureeExec		  = src->DureeExec;
+	dest->Taille		  = src->Taille;
+	dest->NbAccesProc	  = src->NbAccesProc;
+	dest->Priorite		  = src->Priorite;
+	dest->NbPageEnMemoire = src->NbPageEnMemoire;
+
+} // CopierSProc ()
+
 void RecalculerPriorite ()
 {
+	SProcessus *ListeTmp[5][256];
+
 	for (int i = 0; i < 5; ++i)
 	{
-		for (int j = 0; j < 255; ++j)
+		CursFileAttente[i] = 0;
+		for (int j = 0; j < 256; ++j)
 		{
-			if (ListePriorite [i][j] == NULL) continue;
+			ListeTmp[i][j] = (SProcessus *) malloc (sizeof (SProcessus));
+
+			if (NULL == ListePriorite[i][j])
+				ListeTmp[i][j] = NULL;
+			else
+			{
+				CopierSProc (ListeTmp[i][j], ListePriorite[i][j]);
+				ListePriorite[i][j] = NULL;
+			}
+		}
+	}
+
+	for (int i = 0; i < 5; ++i)
+	{
+
+		for (int j = 0; j < 256; ++j)
+		{
+			if (NULL == ListeTmp[i][j])
+				continue;
 			
 			// Calcul de la nouvelle priorité
-			ListePriorite [i][j]->Priorite = (ListePriorite [i][j]->NbAccesProc - 1) / 2;
-			
-			// !! Puis remet le processus dans sa bonne liste de priorité
+			ListeTmp [i][j]->Priorite = (ListeTmp [i][j]->NbAccesProc - 1) / 2;
+
+			AjouterProcListePriorite (ListeTmp[i][j]);
+
+			// Enlève les processus de même ID de l'ancienne file
+			unsigned ProcActuel = ListeTmp [i][j]->IDProc;
+			for (unsigned k = 0; k < 256; ++k)
+				if (NULL != ListeTmp[i][k])
+					if (ListeTmp [i][k]->IDProc == ProcActuel)
+						ListeTmp [i][k] = NULL;
+
 		}
 	}
 
 } // RecalculerPriorite ()
 
-void ResetFileAttente ()
-{
-	CurseurFileAttente = 0;
-	
-	// Initialisation de FileAttente
-	for (int i = 0; i < 5; ++i)
-		for (int j = 0; j < 256; ++j)
-			FileAttente [i][j] = -1;
-	
-} // ResetFileAttente
 
 int VerifierAjoutNouveauProc ()
 {
-	if (Proc[0] != NULL)
+	for (int i = 0; i < 256; ++i)
 	{
-		for (int i = 0; i < 256; ++i)
-		{
-			if (Proc[i] == NULL) break;
+		if (Proc[i] == NULL)
+			continue;
 
-			// Recupère la première case libre de ListePriorite
-			int j = 0;
-			for ( ; j < 256; ++j)
-				if (ListePriorite [0][j] == NULL) break;
+		// Recupère la première case libre de ListePriorite
+		int j;
+		for (j = 0; j < 256; ++j)
+			if (ListePriorite [0][j] == NULL)
+				break;
 
-			ListePriorite [0][j] = Proc[i];
-			Proc[i] = NULL;
-			
-			// Recupère la première case libre de FileAttente
-			int k = CurseurFileAttente;
-			for ( ; k < 256; ++k)
-				if (FileAttente [0][k] == -1) break;
+		ListePriorite [0][j] = Proc[i];
+		Proc[i] = NULL;
 
-			FileAttente [0][k] = ListePriorite [0][j]->IDProc;
-		}
-
-		NouveauProc = 0;
-		return;
 	}
+
+	NouveauProc = 0;
+	return;
 
 } // VerifierAjoutNouveauProc ()
 
+void AjouterProcListePriorite (SProcessus *Proc)
+{
+	for (int i = CursFileAttente [Proc->Priorite]; i < 256; ++i)
+		if (NULL == ListePriorite[Proc->Priorite][i])
+		{
+			ListePriorite[Proc->Priorite][i] = Proc;
+			break;
+		}
+
+} // AjouterProcListePriorite ()
+
 SProcessus * ChercherProcID (unsigned IDProc, unsigned Priorite)
 {
-	
+
 	for (int i = 0; i < 256; ++i)
-	{
-		if (ListePriorite [Priorite][i]->IDProc == IDProc) return ListePriorite [Priorite][i];
-	}
-	
-	printf("Proc of ID %d and priority %d does not exist !!\n", IDProc, Priorite);
+		if (ListePriorite [Priorite][i]->IDProc == IDProc)
+			return ListePriorite [Priorite][i];
+
+	printf ("Proc of ID %d and priority %d does not exist !!\n", IDProc, Priorite);
 	return;
-	
+
 } // ChercherProcID
 
 void *FilePriorite ()
@@ -102,7 +135,9 @@ void *FilePriorite ()
 	{
 		NbOrdonnancement = 0;
 
-		ResetFileAttente();
+		// Remet à 0 les curseurs des files
+		for (int i = 0; i < 5; ++i)
+			CursFileAttente [i] = 0;
 
 		// Applique round robin à la file la plus prioritaire non vide
 		for (int i = 0; ; ++i)
@@ -113,22 +148,11 @@ void *FilePriorite ()
 				VerifierAjoutNouveauProc ();
 				pthread_mutex_unlock (&mutex);
 			}
+
 			int FileContientElement = 0;
 
 			if (NULL != ListePriorite [i][0])
 				FileContientElement = 1;
-
-			/*
-			for (int j = 0; j < 256; ++j)
-			{
-				if (ListePriorite [i][j] == NULL) continue;
-				else
-				{
-					FileContientElement = 1;
-					break;
-				}
-			}
-			*/
 
 			// Si la liste est non vide, on Round Robin
 			if (FileContientElement)
@@ -144,7 +168,6 @@ void *FilePriorite ()
 			if (4 == i)
 				i = -1;
 
-
 		}
 
 		printf("Calculating new priorities...\n");
@@ -154,72 +177,38 @@ void *FilePriorite ()
 
 } // FilePriorite ()
 
-// Retourne le nombre de réordo effectués
 void RoundRobin (unsigned Priorite)
 {
-	/*
-	for ( ; ; )
+
+	for ( ; CursFileAttente[Priorite] < 256; ++NbOrdonnancement)
 	{
-		printf("JE SUIS ROUND ROBIN. RESPECT MY AUTHORITY :\n");
-		
-		if (Proc[0] != NULL)
-			printf ("   Process [0]: duration=%d and size=%d\n", Proc[0]->DureeExec, Proc[0]->Taille);
-		
-		sleep (5);
-	}
-	*/
+		if (NbOrdonnancement > 9)
+			return;
+		// Tant qu'il y a des proc à éxécuter
+		if (NULL == ListePriorite [Priorite][CursFileAttente[Priorite]])
+			return;
 
-	printf("JE SUIS ROUND ROBIN. RESPECT MY AUTHORITY !\n");
+		SProcessus * ProcExecute = ListePriorite [Priorite][CursFileAttente [Priorite]];
 
-	// Vérifie d'abord si des processus ont été ajouté
-	/*
-	if (Proc[0] != NULL)
-	{
-		for (int i = 0; i < 256; ++i)
-		{
-			if (Proc[i] == NULL) break;
-
-			int j = 0;
-			// Recupère la première case
-			for ( ; j < 256; ++j)
-				if (ListePriorite [0][j] == NULL) break;
-
-			ListePriorite [0][j] = Proc[i];
-			Proc[i] = NULL;
-		}
-
-		return;
-	}
-	*/
-
-	// Zouboudabidou ! Et que ça saute ! Perlinpainpain saut de lapin.
-	// Qui sont mortels et lancent des carottes volantes dirigées
-	
-	for ( ; CurseurFileAttente < 256; )
-	{
-		if (FileAttente[Priorite][CurseurFileAttente] == -1) break;
-
-		printf ("FileAttente[%d][%d] = %d\n",
-					Priorite, CurseurFileAttente, FileAttente [Priorite][CurseurFileAttente]);
-		
-		//SProcessus * ProcExecute = ListePriorite [Priorite][FileAttente [Priorite][CurseurFileAttente]];
-		SProcessus * ProcExecute = ChercherProcID (FileAttente [Priorite][CurseurFileAttente], Priorite);
-		
 		for (int PosQuantum = 0;
-				ProcExecute->DureeExec-- > 0 || PosQuantum < Quantum;
+				PosQuantum < Quantum;
 				++PosQuantum)
 		{
-			// Si le processus est terminé alors on l'enlève
-			if (ProcExecute->DureeExec-- == 0)
-			{
-				ListePriorite [Priorite][FileAttente [Priorite][CurseurFileAttente]] = NULL;
-				return;
-			}
-			
-			// Le programme va sigfault dans :
+
 			AccesMemProc (ProcExecute);
 
-			++CurseurFileAttente;
+			// Si le processus est terminé alors on l'enlève
+			if (--ProcExecute->DureeExec == 0)
+			{
+				printf("Process %d finished.\n", ProcExecute->IDProc);
+				ListePriorite[Priorite][CursFileAttente [Priorite]] = NULL;
+				++CursFileAttente [Priorite];
+				break;
+			}
+
+			ListePriorite[Priorite][CursFileAttente[Priorite]] == NULL;
+			AjouterProcListePriorite (ProcExecute);
+			++CursFileAttente [Priorite];
 
 			if (1 == NouveauProc)
 			{
@@ -231,8 +220,8 @@ void RoundRobin (unsigned Priorite)
 					return;
 			}
 		}
+
 	}
-	printf ("FinRR\n");
 
 } // RoundRobin ()
 
