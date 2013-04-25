@@ -17,6 +17,7 @@ unsigned NbCadreMemVirtuelleLibre;
 unsigned NbOrdonnancement;
 unsigned CurseurFileAttente = 0;
 unsigned NouveauProc = 0;
+unsigned NbProc = 0;
 
 static pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 

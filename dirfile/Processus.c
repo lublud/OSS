@@ -11,17 +11,16 @@
  **/
 
 
-SProcessus * CreerProcessus (unsigned DureeExec, unsigned Taille, unsigned IDProc)
+SProcessus * CreerProcessus (unsigned DureeExec, unsigned Taille)
 {
 	SProcessus * Proc = (SProcessus *) malloc (sizeof (SProcessus));
 
-	Proc->IDProc = IDProc;
-	Proc->DateSoumission; // = ... ?
+	Proc->IDProc = ++NbProc;
 	Proc->DureeExec = DureeExec;
 	Proc->Taille = Taille;
 	Proc->Priorite = 0;
 	Proc->NbAccesProc = 0;
-
+	
 	return Proc;
 
 } // CreerProcessus ()
@@ -83,6 +82,19 @@ int VerifierAjoutNouveauProc ()
 	}
 
 } // VerifierAjoutNouveauProc ()
+
+SProcessus * ChercherProcID (unsigned IDProc, unsigned Priorite)
+{
+	
+	for (int i = 0; i < 256; ++i)
+	{
+		if (ListePriorite [Priorite][i]->IDProc == IDProc) return ListePriorite [Priorite][i];
+	}
+	
+	printf("Proc of ID %d and priority %d does not exist !!\n", IDProc, Priorite);
+	return;
+	
+} // ChercherProcID
 
 void *FilePriorite ()
 {
@@ -189,8 +201,10 @@ void RoundRobin (unsigned Priorite)
 
 		printf ("FileAttente[%d][%d] = %d\n",
 					Priorite, CurseurFileAttente, FileAttente [Priorite][CurseurFileAttente]);
-		SProcessus * ProcExecute = ListePriorite [Priorite][FileAttente [Priorite][CurseurFileAttente]];
-
+		
+		//SProcessus * ProcExecute = ListePriorite [Priorite][FileAttente [Priorite][CurseurFileAttente]];
+		SProcessus * ProcExecute = ChercherProcID (FileAttente [Priorite][CurseurFileAttente], Priorite);
+		
 		for (int PosQuantum = 0;
 				ProcExecute->DureeExec-- > 0 || PosQuantum < Quantum;
 				++PosQuantum)
@@ -221,3 +235,4 @@ void RoundRobin (unsigned Priorite)
 	printf ("FinRR\n");
 
 } // RoundRobin ()
+

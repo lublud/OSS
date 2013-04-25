@@ -100,7 +100,7 @@ void ChoixNouveauProc ()
 	{
 		if (Proc[i] == NULL)
 		{
-			Proc[i] = CreerProcessus (Duree, Taille, i);
+			Proc[i] = CreerProcessus (Duree, Taille);
 			break;
 		}
 	}
@@ -139,12 +139,18 @@ void ChoixNouveauProc ()
 
 void AfficheTabProc ()
 {
-	printf("Current processes:\n");
+	printf("Priority\t\tQueue line\n");
 	
-	for (int i = 0; i < 256; ++i)
+	for (int i = 0; i < 5; ++i)
 	{
-		if (Proc[i] != NULL)
-			printf ("   Process [%d]: duration=%d and size=%d\n", i, Proc[i]->DureeExec, Proc[i]->Taille);
+		printf("%d\t\t\t", i);
+		for (int j = 0; j < 256; ++j)
+		{
+			if (FileAttente [i][j] != -1)
+			printf ("%d, ", FileAttente [i][j]);
+			//	printf ("   Process [%d]: duration=%d and size=%d\n", i, Proc[i]->DureeExec, Proc[i]->Taille);
+		}
+		printf("\n");
 	}
 	
 } // AfficheTabProc ()
