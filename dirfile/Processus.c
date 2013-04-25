@@ -78,7 +78,6 @@ int VerifierAjoutNouveauProc ()
 			FileAttente [0][k] = ListePriorite [0][j]->IDProc;
 		}
 
-		// mutex
 		NouveauProc = 0;
 		return;
 	}
@@ -97,7 +96,11 @@ void *FilePriorite ()
 		for (int i = 0; ; ++i)
 		{
 			if (1 == NouveauProc)
+			{
+				pthread_mutex_lock (&mutex);
 				VerifierAjoutNouveauProc ();
+				pthread_mutex_unlock (&mutex);
+			}
 			int FileContientElement = 0;
 
 			if (NULL != ListePriorite [i][0])
@@ -206,7 +209,10 @@ void RoundRobin (unsigned Priorite)
 
 			if (1 == NouveauProc)
 			{
+				pthread_mutex_lock (&mutex);
 				VerifierAjoutNouveauProc ();
+				pthread_mutex_unlock (&mutex);
+
 				if ( 0 != Priorite)
 					return;
 			}

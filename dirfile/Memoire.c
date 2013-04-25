@@ -119,20 +119,21 @@ void CalculDuNombreDeCadre ()
 void AccesMemProc (SProcessus * Proc)
 {
 	srand (time (NULL));
-	unsigned PageChoisie = random () % Proc->NbPageEnMemoire;// + 1;
+	unsigned PageChoisie = random () %  Proc->NbPageEnMemoire;
 
 	printf ("PageChoisie = %d\n", PageChoisie);
 	printf("Process %d executing page %d\n", Proc->IDProc, PageChoisie);
-	
-	int i =  0;
-	
+
+	int i;
 	// Premier remplissage
-	for ( ; i < NombreCadreMemoireVive; ++i)
+	for (i = 0; i < NombreCadreMemoireVive; ++i)
 	{
-		if (MemVive [i] != NULL) continue;
-		
-		MemVive [i]->IDProc = Proc->IDProc;
-		MemVive [i]->PageProc = PageChoisie;
+		if (MemVive[i] == NULL)
+		{
+			MemVive[i] = (SMemoire *) malloc (sizeof (MemVive));
+			MemVive[i]->IDProc = Proc->IDProc;
+			MemVive[i]->PageProc = PageChoisie;
+		}
 	}
 	
 	// Algorithme de la seconde chance

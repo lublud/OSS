@@ -42,8 +42,9 @@ void AfficheMenuChoix ()
 		if 		(Rep == 0) continue;
 		else if (Rep == 1)
 		{
+			pthread_mutex_lock (&mutex);
 			ChoixNouveauProc ();
-			NouveauProc = 1;
+			pthread_mutex_unlock (&mutex);
 		}
 		else if (Rep == 2) AfficheTabProc ();
 		else if (Rep == 3) AfficherEtatMemoire ();
@@ -129,8 +130,8 @@ void ChoixNouveauProc ()
 	//ListePriorite[0][i]->NbPageEnMemoire = NombreDePage;
 	
 	
-	//mutex
-	
+	NouveauProc = 1;
+
 	printf("\nProcess %d created with duration=%d and size=%d (%d pages)\n",
 			i, Proc[i]->DureeExec, Proc[i]->Taille, Proc[i]->NbPageEnMemoire);
 
@@ -235,7 +236,6 @@ void Initialisation ()
 			printf ("Virtual memory size has to be greater than RAM size!\n");
 			printf ("Enter virtual memory size: ");
 			gets (&rep);
-			break;
 		}
 
 	}
