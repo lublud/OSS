@@ -20,6 +20,8 @@ unsigned NbProc = 0;
 
 unsigned CursFileAttente [5];
 
+unsigned CurseurMem = 0;
+
 static pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 
 unsigned *CadrePageMemViveRestante;

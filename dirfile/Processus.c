@@ -67,6 +67,7 @@ void RecalculerPriorite ()
 			
 			// Calcul de la nouvelle priorité
 			ListeTmp [i][j]->Priorite = (ListeTmp [i][j]->NbAccesProc - 1) / 2;
+			ListeTmp [i][j]->NbAccesProc = 0;
 
 			AjouterProcListePriorite (ListeTmp[i][j]);
 
@@ -128,6 +129,29 @@ SProcessus * ChercherProcID (unsigned IDProc, unsigned Priorite)
 	return;
 
 } // ChercherProcID
+
+void SupprimerPageMemoire (unsigned IDProc)
+{
+	for (int i = 0; i < NombreCadreMemoireVive; ++i)
+	{
+		if (MemVive[i] != NULL &&
+			MemVive[i]->IDProc == IDProc)
+		{
+			MemVive[i] = NULL;
+		}
+	}
+
+	for (int i = 0; i < NombreCadreMemoireVirtuelle; ++i)
+	{
+		if (MemVirtuelle[i] != NULL &&
+			MemVirtuelle[i]->IDProc == IDProc)
+		{
+			MemVirtuelle[i] = NULL;
+			++NbCadreMemVirtuelleLibre;
+		}
+	}
+	
+} // SupprimerPageMemoire ()
 
 void *FilePriorite ()
 {
@@ -201,6 +225,7 @@ void RoundRobin (unsigned Priorite)
 			if (--ProcExecute->DureeExec == 0)
 			{
 				printf("Process %d finished.\n", ProcExecute->IDProc);
+				SupprimerPageMemoire (ProcExecute->IDProc);
 				ListePriorite[Priorite][CursFileAttente [Priorite]] = NULL;
 				++CursFileAttente [Priorite];
 				break;

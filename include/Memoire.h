@@ -14,5 +14,6 @@ typedef struct SMemoire
 {
 	unsigned IDProc;
 	unsigned PageProc;
+	unsigned BitRef;
 
 } SMemoire;
