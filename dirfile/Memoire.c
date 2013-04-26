@@ -26,20 +26,15 @@ int AjouterNouveauProcessusEnMemoire (SProcessus *proc)
 	NombreDePage = 0;
 	for (i = 0; 0 != TailleProcTmp; ++i)
 	{
-		//if (NULL != CadrePageMemVirtuelle[i])
-		//	continue;
 		if (NULL != MemVirtuelle[i])
 			continue;
-		
-		//CadrePageMemVirtuelle[i] = proc;
-		
+
 		MemVirtuelle[i] = (SMemoire *) malloc (sizeof (SMemoire));
 		MemVirtuelle[i]->IDProc = proc->IDProc;
 		MemVirtuelle[i]->PageProc = NombreDePage;
 		++NombreDePage;
 
 		--NbCadreMemVirtuelleLibre;
-
 
 		if (TailleProcTmp > CadrePageMemVirtuelleRestante[i])
 		{
@@ -71,22 +66,7 @@ void CalculDuNombreDeCadre ()
 
 	printf ("RAM creation (%d frame(s))\n", NombreCadreMemoireVive);
 
-//	CadrePageMemVive = (SProcessus *)
-//					malloc (NombreCadreMemoireVive * sizeof (SProcessus));
-
 	MemVive = (SMemoire *) malloc (NombreCadreMemoireVive * sizeof (SMemoire));
-
-	CadrePageMemViveRestante = (unsigned *)
-					malloc (NombreCadreMemoireVive * sizeof (unsigned));
-
-
-	for (i = 0; i < NombreCadreMemoireVive; ++i)
-		CadrePageMemViveRestante [i] = TailleCadrePages;
-	
-	
-	if (MemoireManquante > 0)
-		CadrePageMemViveRestante [i - 1] = MemoireManquante;
-
 
 
 	/* Mémoire virtuelle */
@@ -142,7 +122,7 @@ void AccesMemProc (SProcessus * Proc)
 	// Si la page n'est pas en mémoire vive, on fait la seconde chance
 	if (i == NombreCadreMemoireVive)
 	{
-		printf("Chargement de la page %d du processus %d\n", PageChoisie, Proc->IDProc);
+		printf("Loading page %d of process %d\n", PageChoisie, Proc->IDProc);
 		
 		// On cherche la case dans la mémoire virtuelle pour la supprimer
 		for (i = 0; i < NombreCadreMemoireVirtuelle; ++i)
@@ -153,6 +133,7 @@ void AccesMemProc (SProcessus * Proc)
 			{
 				MemVirtuelle[i] = NULL;
 				++NbCadreMemVirtuelleLibre;
+				CadrePageMemVirtuelleRestante[i] += TailleCadrePages;
 				break;
 			}
 		}
@@ -175,9 +156,6 @@ void AccesMemProc (SProcessus * Proc)
 				++CurseurMem;
 				break;
 			}
-			
-			//printf("MemVive[%d]->BitRef = %d\n", CurseurMem, MemVive[CurseurMem]->BitRef);
-			//sleep (1);
 
 			if (1 == MemVive[CurseurMem]->BitRef)
 				MemVive[CurseurMem]->BitRef = 0;
@@ -187,12 +165,12 @@ void AccesMemProc (SProcessus * Proc)
 				// On cherche la première place dans la virtuelle
 				for ( ; FirstFreeVirtuelle < NombreCadreMemoireVirtuelle; ++FirstFreeVirtuelle)
 					if (MemVirtuelle[FirstFreeVirtuelle] == NULL) break;
-				
+
 				// On remet l'ancienne de la vive dans la virtuelle
 				MemVirtuelle[FirstFreeVirtuelle] = (SMemoire *) malloc (sizeof (SMemoire));
 				MemVirtuelle[FirstFreeVirtuelle]->IDProc = MemVive[CurseurMem]->IDProc;
 				MemVirtuelle[FirstFreeVirtuelle]->PageProc = MemVive[CurseurMem]->PageProc;
-				
+
 				// On met la nouvelle dans la vive
 				MemVive[CurseurMem]->IDProc = Proc->IDProc;
 				MemVive[CurseurMem]->PageProc = PageChoisie;

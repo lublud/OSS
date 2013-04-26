@@ -17,6 +17,7 @@ unsigned NbCadreMemVirtuelleLibre;
 unsigned NbOrdonnancement;
 unsigned NouveauProc = 0;
 unsigned NbProc = 0;
+unsigned CalculPriorite = 0;
 
 unsigned CursFileAttente [5];
 
@@ -24,7 +25,6 @@ unsigned CurseurMem = 0;
 
 static pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 
-unsigned *CadrePageMemViveRestante;
 unsigned *CadrePageMemVirtuelleRestante;
 
 SMemoire ** MemVive;

@@ -40,12 +40,7 @@ void AfficheMenuChoix ()
 		int Rep = MenuChoix ();
 
 		if 		(Rep == 0) continue;
-		else if (Rep == 1)
-		{
-			pthread_mutex_lock (&mutex);
-			ChoixNouveauProc ();
-			pthread_mutex_unlock (&mutex);
-		}
+		else if (Rep == 1) ChoixNouveauProc ();
 		else if (Rep == 2) AfficheTabProc ();
 		else if (Rep == 3) AfficherEtatMemoire ();
 		else if (Rep == 4) return;
@@ -55,12 +50,14 @@ void AfficheMenuChoix ()
 
 void ChoixNouveauProc ()
 {
+	for (; 1 == CalculPriorite;);
+
 	unsigned Duree, Taille;
-	
+
 	char rep[32];
 	int i = -1;
 	int NombreDePage;
-	
+
 	printf ("Enter processus duration: ");
 	for (gets (&rep); -1 == i;)
 	{
@@ -73,8 +70,8 @@ void ChoixNouveauProc ()
 				gets (&rep);
 				break;
 			}
-
 	}
+
 	Duree = atoi (&rep);
 
 	i = -1;
@@ -90,11 +87,12 @@ void ChoixNouveauProc ()
 				gets (&rep);
 				break;
 			}
-
 	}
+
 	Taille = atoi (&rep);
-	
-	
+
+
+	pthread_mutex_lock (&mutex);
 	// Cherche une case vide
 	for (i = 0; i < 256; ++i)
 	{
@@ -112,16 +110,19 @@ void ChoixNouveauProc ()
 		free (Proc [i]);
 		return;
 	}
-	
+
 	// Ajout du processus
 	Proc[i]->NbPageEnMemoire = NombreDePage;
-	//ListePriorite[0][i]->NbPageEnMemoire = NombreDePage;
-	
-	
+	AjouterProcListePriorite (Proc[i]);
+
+
 	NouveauProc = 1;
+
+	pthread_mutex_unlock (&mutex);
 
 	printf("\nProcess %d created with duration=%d and size=%d (%d pages)\n",
 			i, Proc[i]->DureeExec, Proc[i]->Taille, Proc[i]->NbPageEnMemoire);
+	Proc[i] = NULL;
 
 } // ChoixNouveauProc ()
 
@@ -158,8 +159,6 @@ void AfficherEtatMemoire ()
 		if (NULL == MemVive[i])
 			printf ("%4d:        ", i);
 		else
-		//	printf ("%4d: %2d, %2d ", i, CadrePageMemVive[i]->IDProc,
-		//				PageProcessus[CadrePageMemVive[i]->IDProc]++);
 			printf ("%4d: %2d, %2d ", i, MemVive[i]->IDProc, MemVive[i]->PageProc);
 
 		if ( ! (++i % 5) )
