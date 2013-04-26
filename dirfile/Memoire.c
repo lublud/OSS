@@ -161,6 +161,8 @@ void AccesMemProc (SProcessus * Proc)
 				MemVive[CurseurMem]->BitRef = 0;
 			else
 			{
+				fprintf(SortieAffichage, "-> Saving page %d of process %d\n", MemVive[CurseurMem]->PageProc, MemVive[CurseurMem]->IDProc);
+				
 				int FirstFreeVirtuelle = 0;
 				// On cherche la première place dans la virtuelle
 				for ( ; FirstFreeVirtuelle < NombreCadreMemoireVirtuelle; ++FirstFreeVirtuelle)

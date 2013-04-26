@@ -68,7 +68,7 @@ void RecalculerPriorite ()
 			if (NULL == ListeTmp[i][j])
 				continue;
 			
-			// Calcul de la nouvelle priorité
+			// Calcul de la nouvelle priorité si NbAccessProc n'est pas nul
 			if (0 != ListeTmp[i][j]->NbAccesProc)
 				ListeTmp [i][j]->Priorite = (ListeTmp [i][j]->NbAccesProc - 1) / 2;
 			else
@@ -76,6 +76,7 @@ void RecalculerPriorite ()
 
 			ListeTmp [i][j]->NbAccesProc = 0;
 
+			// Ajout du processus à la bonne liste de priorité
 			pthread_mutex_lock (&mutex);
 			AjouterProcListePriorite (ListeTmp[i][j]);
 			NouveauProc = 1;

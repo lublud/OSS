@@ -16,8 +16,8 @@ typedef struct SProcessus
 	unsigned DureeExec;
 	unsigned Taille;
 
-	unsigned NbAccesProc;
 	unsigned Priorite;
+	unsigned NbAccesProc;
 	unsigned NbPageEnMemoire;
 
 } SProcessus;
