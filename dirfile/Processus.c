@@ -201,53 +201,63 @@ void RoundRobin (unsigned Priorite)
 			return;
 
 		SProcessus * ProcExecute = ListePriorite [Priorite][CursFileAttente [Priorite]];
+		int IndProcFini;
 
 		for (int PosQuantum = 0;
 				PosQuantum < Quantum;
 				++PosQuantum)
 		{
+			IndProcFini = -1;
 
 			AccesMemProc (ProcExecute);
 
 			// Si le processus est terminé alors on l'enlève
 			if (--ProcExecute->DureeExec == 0)
 			{
-				fprintf(SortieAffichage, "! Process %d finished.\n", ProcExecute->IDProc);
+				fprintf (SortieAffichage, "! Process %d finished.\n", ProcExecute->IDProc);
 				SupprimerPageMemoire (ProcExecute->IDProc);
 
-				for (int m = 0; m < 256; ++m)
-					if (NULL != ListePriorite[Priorite][m] &&
-						ProcExecute->IDProc == ListePriorite[Priorite][m]->IDProc)
-						ListePriorite[Priorite][m] = NULL;
+				for (IndProcFini = 0; IndProcFini < 256; ++IndProcFini)
+					if (NULL != ListePriorite[Priorite][IndProcFini] &&
+							ProcExecute->IDProc == ListePriorite[Priorite][IndProcFini]->IDProc)
+						ListePriorite[Priorite][IndProcFini] = NULL;
 				++CursFileAttente [Priorite];
 				break;
 			}
+		}
 
+
+		// si le processus ne s'est pas fini
+		if (-1 == IndProcFini)
+		{
+			++ProcExecute->NbAccesProc;
+
+			// on le retire de la file
 			ListePriorite[Priorite][CursFileAttente[Priorite]] = NULL;
 			int ind;
 			++CursFileAttente[Priorite];
 
+			// pour le placer en fin de file
 			for (ind = CursFileAttente[Priorite]; ; ++ind)
 				if (NULL == ListePriorite[Priorite][ind])
 				{
 					ListePriorite[Priorite][ind] = ProcExecute;
 					break;
 				}
-
-			if (1 == NouveauProc)
-			{
-				pthread_mutex_lock (&mutex);
-
-				if ( 0 != Priorite)
-				{
-					NouveauProc = 0;
-					pthread_mutex_unlock (&mutex);
-					return;
-				}
-				pthread_mutex_unlock (&mutex);
-			}
 		}
 
+		if (1 == NouveauProc)
+		{
+			pthread_mutex_lock (&mutex);
+
+			if ( 0 != Priorite)
+			{
+				NouveauProc = 0;
+				pthread_mutex_unlock (&mutex);
+				return;
+			}
+			pthread_mutex_unlock (&mutex);
+		}
 	}
 
 } // RoundRobin ()

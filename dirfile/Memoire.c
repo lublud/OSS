@@ -100,11 +100,9 @@ void AccesMemProc (SProcessus * Proc)
 
 	fprintf(SortieAffichage, "Process %d executing page %d\n", Proc->IDProc, PageChoisie);
 
-	++Proc->NbAccesProc;
 
-	
 	int i;
-	
+
 	// On vérifie si la page est déjà en vive
 	for (i = 0; i < NombreCadreMemoireVive; ++i)
 	{
@@ -116,14 +114,14 @@ void AccesMemProc (SProcessus * Proc)
 			break;
 		}
 	}
-	
+
 	// Algorithme de la seconde chance pour ajouter la page en mémoire vive
-	
+
 	// Si la page n'est pas en mémoire vive, on fait la seconde chance
 	if (i == NombreCadreMemoireVive)
 	{
 		fprintf(SortieAffichage, "-> Loading page %d of process %d\n", PageChoisie, Proc->IDProc);
-		
+
 		// On cherche la case dans la mémoire virtuelle pour la supprimer
 		for (i = 0; i < NombreCadreMemoireVirtuelle; ++i)
 		{
