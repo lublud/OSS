@@ -23,18 +23,22 @@ int main(int argc, const char *argv[])
 
 	pthread_t ThreadRR;
 	int res;
+	
+	CreerTerminalAffichage ();
 
 	Initialisation ();
 
 	printf ("\n\nCalculating page frame's number ...\n");
 	CalculDuNombreDeCadre ();
-
+	
 	res = pthread_create (&ThreadRR, NULL, FilePriorite, NULL);
-
+	
 	AfficheMenuChoix ();
 
 	pthread_cancel (ThreadRR);
-
+	
+	fprintf(SortieAffichage, "\nOSS terminated ! Please close the window.\n");
+	
 	return 0;
 
 } // main ()

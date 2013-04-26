@@ -15,8 +15,11 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <ctype.h>
-#include <time.h>
-#include <pthread.h>
+#include <time.h> // random
+#include <pthread.h> // thread
+#include <sys/types.h> // open
+#include <sys/stat.h> // open
+#include <fcntl.h> // open
 
 #include "Memoire.h"
 #include "Processus.h"

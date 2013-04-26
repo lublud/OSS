@@ -108,7 +108,7 @@ SProcessus * ChercherProcID (unsigned IDProc, unsigned Priorite)
 		if (ListePriorite [Priorite][i]->IDProc == IDProc)
 			return ListePriorite [Priorite][i];
 
-	printf ("Proc of ID %d and priority %d does not exist !!\n", IDProc, Priorite);
+	fprintf(SortieAffichage, "Proc of ID %d and priority %d does not exist !!\n", IDProc, Priorite);
 	return;
 
 } // ChercherProcID
@@ -180,9 +180,9 @@ void *FilePriorite ()
 		for (int i = 0; i < 5; ++i)
 			CursFileAttente[i] = 0;
 
-		printf("Calculating new priorities...\n");
+		fprintf(SortieAffichage, "\n...Calculating new priorities...\n");
 		RecalculerPriorite ();
-		printf("Done!\n");
+		fprintf(SortieAffichage, "Done!\n\n");
 	}
 
 } // FilePriorite ()
@@ -211,7 +211,7 @@ void RoundRobin (unsigned Priorite)
 			// Si le processus est terminé alors on l'enlève
 			if (--ProcExecute->DureeExec == 0)
 			{
-				printf("Process %d finished.\n", ProcExecute->IDProc);
+				fprintf(SortieAffichage, "! Process %d finished.\n", ProcExecute->IDProc);
 				SupprimerPageMemoire (ProcExecute->IDProc);
 
 				for (int m = 0; m < 256; ++m)

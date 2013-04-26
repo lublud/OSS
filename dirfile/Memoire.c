@@ -18,7 +18,7 @@ int AjouterNouveauProcessusEnMemoire (SProcessus *proc)
 
 	if ( (NbCadreMemVirtuelleLibre * TailleCadrePages) < proc->Taille )
 	{
-		fprintf (stderr, "\033[31m Error: Out of virtual memory\033[0m\n");
+		fprintf(SortieAffichage, "\033[31m Error: Out of virtual memory\033[0m\n");
 		return -1;
 	}
 	
@@ -98,7 +98,7 @@ void AccesMemProc (SProcessus * Proc)
 	srand (time (NULL));
 	unsigned PageChoisie = random () %  Proc->NbPageEnMemoire;
 
-	printf("Process %d executing page %d\n", Proc->IDProc, PageChoisie);
+	fprintf(SortieAffichage, "Process %d executing page %d\n", Proc->IDProc, PageChoisie);
 
 	++Proc->NbAccesProc;
 
@@ -122,7 +122,7 @@ void AccesMemProc (SProcessus * Proc)
 	// Si la page n'est pas en mémoire vive, on fait la seconde chance
 	if (i == NombreCadreMemoireVive)
 	{
-		printf("Loading page %d of process %d\n", PageChoisie, Proc->IDProc);
+		fprintf(SortieAffichage, "-> Loading page %d of process %d\n", PageChoisie, Proc->IDProc);
 		
 		// On cherche la case dans la mémoire virtuelle pour la supprimer
 		for (i = 0; i < NombreCadreMemoireVirtuelle; ++i)

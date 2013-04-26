@@ -10,6 +10,7 @@
  *
 **/
 
+FILE * SortieAffichage;
 
 unsigned TailleMemoireVive, TailleMemoireVirtuelle, TailleCadrePages, Quantum;
 unsigned NombreCadreMemoireVive, NombreCadreMemoireVirtuelle;
@@ -29,7 +30,5 @@ unsigned *CadrePageMemVirtuelleRestante;
 
 SMemoire ** MemVive;
 SMemoire ** MemVirtuelle;
-
-SProcessus * Proc [256];
 
 SProcessus * ListePriorite [5][256];

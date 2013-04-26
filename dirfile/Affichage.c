@@ -10,6 +10,32 @@
  *
  **/
 
+void CreerTerminalAffichage ()
+{
+	// Crée la nouvelle fenêtre et calcule son ID
+	system ("ls /dev/pts > .tty1");
+	system ("gnome-terminal -t \"OSS Monitoring\"");
+	sleep (1);
+	system ("ls /dev/pts > .tty2");
+	system ("diff -n .tty1 .tty2 | tail -n 1 > .tty");
+	
+	// Récupère l'ID contenu dans le fichier
+	int FileTty = open (".tty", O_RDONLY);
+	char buf [3];
+	read (FileTty, buf, 3);
+	int tty = atoi (&buf);
+	system ("rm .tty1 .tty2 .tty");
+	
+	// Génère l'url du terminal d'affichage et l'ouvre dans SortieAffichage
+	char url [12];
+	sprintf(url, "/dev/pts/%d", tty);
+	SortieAffichage = fopen (url, "a");
+	
+	printf("Opened the monitoring terminal at %s\n", url);
+	fprintf(SortieAffichage, "\n=== OSS - Operating System Simulator ===\n\n");
+	
+} // CreerTerminalAffichage ()
+
 int MenuChoix ()
 {
 	char Rep [64];
@@ -91,38 +117,28 @@ void ChoixNouveauProc ()
 
 	Taille = atoi (&rep);
 
-
 	pthread_mutex_lock (&mutex);
-	// Cherche une case vide
-	for (i = 0; i < 256; ++i)
-	{
-		if (Proc[i] == NULL)
-		{
-			Proc[i] = CreerProcessus (Duree, Taille);
-			break;
-		}
-	}
-
-	NombreDePage = AjouterNouveauProcessusEnMemoire (Proc[i]);
+	
+	SProcessus * ProcTemp = CreerProcessus (Duree, Taille);
+	
+	NombreDePage = AjouterNouveauProcessusEnMemoire (ProcTemp);
 	// Si le proc demande plus de mémoire que disponible
 	if (-1 == NombreDePage)
 	{
-		free (Proc [i]);
+		free (ProcTemp);
 		return;
 	}
 
 	// Ajout du processus
-	Proc[i]->NbPageEnMemoire = NombreDePage;
-	AjouterProcListePriorite (Proc[i]);
-
+	ProcTemp->NbPageEnMemoire = NombreDePage;
+	AjouterProcListePriorite (ProcTemp);
 
 	NouveauProc = 1;
 
 	pthread_mutex_unlock (&mutex);
 
 	printf("\nProcess %d created with duration=%d and size=%d (%d pages)\n",
-			i, Proc[i]->DureeExec, Proc[i]->Taille, Proc[i]->NbPageEnMemoire);
-	Proc[i] = NULL;
+			NbProc, ProcTemp->DureeExec, ProcTemp->Taille, ProcTemp->NbPageEnMemoire);
 
 } // ChoixNouveauProc ()
 
