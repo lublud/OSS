@@ -59,3 +59,6 @@ We used threads in order to have both scheduling and display (new processes...) 
 That way, the scheduling is done in background.
 
 We added the possibility to display the time left for each process because we think a user must be able to know when a process will end its execution.
+
+To paraphrase George Orwell:
+«All processes are created equal but some are more equal than others... »
