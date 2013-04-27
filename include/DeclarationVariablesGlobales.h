@@ -1,12 +1,12 @@
 /**
  *
- * @file: DeclarationVariablesGlobales.h
+ * @file: 	DeclarationVariablesGlobales.h
  *
  * @author: Tom CHASSAGNE && Ludovic LUBEIGT
  *
- * @date: 17/04/13
+ * @date: 	17/04/13
  *
- * @brief Liste des variables globales utilisée dans les fichiers sources.
+ * @brief:	Liste des variables globales utilisée dans les fichiers sources.
  *
 **/
 

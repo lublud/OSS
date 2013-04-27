@@ -44,7 +44,9 @@ int MenuChoix ()
 	printf ("1 - New process\n");
 	printf ("2 - Process(es) in the run queue\n");
 	printf ("3 - Diplay memory\n");
-	printf ("4 - Exit program\n");
+	printf ("4 - Process(es) with their duration\n");
+	printf ("5 - Exit program\n");
+	
 	printf ("Choice : ");
 
 	fflush (stdin);
@@ -53,7 +55,7 @@ int MenuChoix ()
 	
 	printf("\n");
 
-	if (Choix > 0 && Choix < 5) return Choix;
+	if (Choix > 0 && Choix < 6) return Choix;
 	else return 0;
 
 } // MenuChoix ()
@@ -69,7 +71,8 @@ void AfficheMenuChoix ()
 		else if (Rep == 1) ChoixNouveauProc ();
 		else if (Rep == 2) AfficheTabProc ();
 		else if (Rep == 3) AfficherEtatMemoire ();
-		else if (Rep == 4) return;
+		else if (Rep == 4) AfficherProcDuree ();
+		else if (Rep == 5) return;
 	}
 
 } // AfficheMenuChoix ()
@@ -84,16 +87,22 @@ void ChoixNouveauProc ()
 	int i = -1;
 	int NombreDePage;
 
-	printf ("Enter processus duration: ");
-	for (gets (&rep); -1 == i;)
+	for ( ; -1 == i; )
 	{
+		printf ("Enter processus duration: ");
+		gets (&rep);
+		
+		if (strcmp(rep, "") == 0)
+		{
+			i = -1;
+			printf ("\033[31mYou need to enter something !\033[0m\n");
+			continue;
+		}
 		for (i = 0; NULL != rep [i]; ++i)
 			if (! isdigit (rep [i]))
 			{
 				i = -1;
-				printf ("It's not a number!\n");
-				printf ("Enter processus duration: ");
-				gets (&rep);
+				printf ("\033[31mIt's not a number!\033[0m\n");
 				break;
 			}
 	}
@@ -101,16 +110,22 @@ void ChoixNouveauProc ()
 	Duree = atoi (&rep);
 
 	i = -1;
-	printf ("Enter processus size: ");
-	for (gets (&rep); -1 == i;)
-	{
+	for ( ; -1 == i; )
+	{	
+		printf ("Enter processus size: ");
+		gets (&rep);
+		
+		if (strcmp(rep, "") == 0)
+		{
+			i = -1;
+			printf ("\033[31mYou need to enter something !\033[0m\n");
+			continue;
+		}
 		for (i = 0; NULL != rep [i]; ++i)
 			if (! isdigit (rep [i]))
 			{
 				i = -1;
-				printf ("It's not a number!\n");
-				printf ("Enter processus size: ");
-				gets (&rep);
+				printf ("\033[31mIt's not a number!\033[0m\n");
 				break;
 			}
 	}
@@ -139,6 +154,8 @@ void ChoixNouveauProc ()
 
 	printf("\nProcess %d created with duration=%d and size=%d (%d pages)\n",
 			NbProc, ProcTemp->DureeExec, ProcTemp->Taille, ProcTemp->NbPageEnMemoire);
+	
+	fprintf(SortieAffichage, "Processus %d considered\n", NbProc);
 
 } // ChoixNouveauProc ()
 
@@ -158,6 +175,21 @@ void AfficheTabProc ()
 	}
 	
 } // AfficheTabProc ()
+
+void AfficherProcDuree ()
+{
+	printf("Process : duration\n");
+	
+	for (int i = 0; i < 5; ++i)
+	{
+		for (int j = CursFileAttente[i]; j < 256; ++j)
+		{
+			if (ListePriorite [i][j] != NULL)
+				printf ("Process %d : %d\n", ListePriorite [i][j]->IDProc, ListePriorite [i][j]->DureeExec);
+		}
+	}
+	
+} // AfficheProcDuree ()
 
 void AfficherEtatMemoire ()
 {
@@ -204,17 +236,23 @@ void Initialisation ()
 
 	char rep[32];
 	int i = -1;
-
-	printf ("Enter RAM size: ");
-	for (gets (&rep); -1 == i;)
+	
+	for ( ; -1 == i;)
 	{
+		printf ("Enter RAM size: ");
+		gets (&rep);
+		
+		if (strcmp(rep, "") == 0)
+		{
+			i = -1;
+			printf ("\033[31mYou need to enter something !\033[0m\n");
+			continue;
+		}
 		for (i = 0; NULL != rep [i]; ++i)
 			if (! isdigit (rep [i]))
 			{
 				i = -1;
-				printf ("It's not a number!\n");
-				printf ("Enter RAM size: ");
-				gets (&rep);
+				printf ("\033[31mIt's not a number!\033[0m\n");
 				break;
 			}
 
@@ -222,66 +260,79 @@ void Initialisation ()
 	TailleMemoireVive = atoi (&rep);
 
 	i = -1;
-	printf ("Enter virtual memory size: ");
-	for (gets (&rep); -1 == i;)
+	for ( ; -1 == i;)
 	{
+		printf ("Enter virtual memory size: ");
+		gets (&rep);
+		
+		if (strcmp(rep, "") == 0)
+		{
+			i = -1;
+			printf ("\033[31mYou need to enter something !\033[0m\n");
+			continue;
+		}
 		for (i = 0; NULL != rep [i]; ++i)
 			if (! isdigit (rep [i]))
 			{
 				i = -1;
-				printf ("It's not a number!\n");
-				printf ("Enter virtual memory size: ");
-				gets (&rep);
+				printf ("\033[31mIt's not a number!\033[0m\n");
 				break;
 			}
 
 		if ( (-1 != i) && (TailleMemoireVive > atoi (&rep)) )
 		{
 			i = -1;
-			printf ("Virtual memory size has to be greater than RAM size!\n");
-			printf ("Enter virtual memory size: ");
-			gets (&rep);
+			printf ("\033[31mVirtual memory size has to be greater than RAM size!\033[0m\n");
 		}
 
 	}
 	TailleMemoireVirtuelle = atoi (&rep);
 
 	i = -1;
-	printf ("Enter page frames size: ");
-	for (gets (&rep); -1 == i;)
+	for ( ; -1 == i;)
 	{
+		printf ("Enter page frames size: ");
+		gets (&rep);
+		
+		if (strcmp(rep, "") == 0)
+		{
+			i = -1;
+			printf ("\033[31mYou need to enter something !\033[0m\n");
+			continue;
+		}
 		for (i = 0; NULL != rep [i]; ++i)
 			if (! isdigit (rep [i]))
 			{
 				i = -1;
-				printf ("It's not a number!\n");
-				printf ("Enter page frames size: ");
-				gets (&rep);
+				printf ("\033[31mIt's not a number!\033[0m\n");
 				break;
 			}
 
 		if ( (-1 != 1) && (0 == atoi (&rep)) )
 		{
 			i = -1;
-			printf ("You can't have a page frames size at 0");
-			printf ("Etner page frames size: ");
-			gets (&rep);
-			break;
+			printf ("\033[31mYou can't have a page frames size at 0\033[0m\n");
 		}
 	}
 	TailleCadrePages = atoi (&rep);
 
 	i = -1;
-	printf ("Enter quantum: ");
-	for (gets (&rep); -1 == i;)
+	for ( ; -1 == i;)
 	{
+		printf ("Enter quantum: ");
+		gets (&rep);
+		
+		if (strcmp(rep, "") == 0)
+		{
+			i = -1;
+			printf ("\033[31mYou need to enter something !\033[0m\n");
+			continue;
+		}
 		for (i = 0; NULL != rep [i]; ++i)
 			if (! isdigit (rep [i]))
 			{
 				i = -1;
-				printf ("It's not a number!\n");
-				printf ("Enter quantum: ");
-				gets (&rep);
+				printf ("\033[31mIt's not a number!\033[0m\n");
 				break;
 			}
 	}

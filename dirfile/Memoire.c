@@ -18,11 +18,10 @@ int AjouterNouveauProcessusEnMemoire (SProcessus *proc)
 
 	if ( (NbCadreMemVirtuelleLibre * TailleCadrePages) < proc->Taille )
 	{
-		fprintf(SortieAffichage, "\033[31m Error: Out of virtual memory\033[0m\n");
+		printf("\033[31mError: Out of virtual memory\033[0m\n");
 		return -1;
 	}
 	
-
 	NombreDePage = 0;
 	for (i = 0; 0 != TailleProcTmp; ++i)
 	{
