@@ -141,6 +141,7 @@ void ChoixNouveauProc ()
 	if (-1 == NombreDePage)
 	{
 		free (ProcTemp);
+		pthread_mutex_unlock (&mutex);
 		return;
 	}
 
@@ -148,14 +149,17 @@ void ChoixNouveauProc ()
 	ProcTemp->NbPageEnMemoire = NombreDePage;
 	AjouterProcListePriorite (ProcTemp);
 
+	char *tmp = (char *) malloc (8);
+	sprintf (tmp, "%d, ", NbProc);
+	strcat (ListeNouveauProc, tmp);
+	free (tmp);
+
 	NouveauProc = 1;
 
 	pthread_mutex_unlock (&mutex);
 
 	printf("\nProcess %d created with duration=%d and size=%d (%d pages)\n",
 			NbProc, ProcTemp->DureeExec, ProcTemp->Taille, ProcTemp->NbPageEnMemoire);
-	
-	fprintf(SortieAffichage, "Processus %d considered\n", NbProc);
 
 } // ChoixNouveauProc ()
 
@@ -337,5 +341,7 @@ void Initialisation ()
 			}
 	}
 	Quantum = atoi (&rep);
+
+	ListeNouveauProc = (char *) malloc (64);
 
 } // Initialisation ()

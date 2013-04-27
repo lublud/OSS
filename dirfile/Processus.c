@@ -150,6 +150,8 @@ void *FilePriorite ()
 			if (1 == NouveauProc)
 			{
 				pthread_mutex_lock (&mutex);
+				fprintf (SortieAffichage, "Process(es) %sconsidered.\n", ListeNouveauProc);
+				sprintf (ListeNouveauProc, "");
 				NouveauProc = 0;
 				pthread_mutex_unlock (&mutex);
 				i = -1;
@@ -249,6 +251,9 @@ void RoundRobin (unsigned Priorite)
 		if (1 == NouveauProc)
 		{
 			pthread_mutex_lock (&mutex);
+
+			fprintf (SortieAffichage, "Process(es) %sconsidered.\n", ListeNouveauProc);
+			sprintf (ListeNouveauProc, "");
 
 			if ( 0 != Priorite)
 			{

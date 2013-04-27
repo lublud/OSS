@@ -20,6 +20,8 @@ unsigned NouveauProc = 0;
 unsigned NbProc = 0;
 unsigned CalculPriorite = 0;
 
+char *ListeNouveauProc;
+
 unsigned CursFileAttente [5];
 
 unsigned CurseurMem = 0;
