@@ -79,7 +79,6 @@ void RecalculerPriorite ()
 			// Ajout du processus à la bonne liste de priorité
 			pthread_mutex_lock (&mutex);
 			AjouterProcListePriorite (ListeTmp[i][j]);
-			NouveauProc = 1;
 			pthread_mutex_unlock (&mutex);
 
 		}
@@ -143,14 +142,21 @@ void *FilePriorite ()
 	for ( ; ; )
 	{
 		NbOrdonnancement = 0;
-
+		
+		// Si le premier processus n'a pas encore été soumis
+		if (NbProc == 0)
+		{
+			usleep (100);
+			continue;
+		}
+		
 		// Applique round robin à la file la plus prioritaire non vide
 		for (int i = 0; ; ++i)
 		{
 			if (1 == NouveauProc)
 			{
 				pthread_mutex_lock (&mutex);
-				fprintf (SortieAffichage, "Process(es) %sconsidered.\n", ListeNouveauProc);
+				fprintf (SortieAffichage, "! Process(es) %sconsidered.\n", ListeNouveauProc);
 				sprintf (ListeNouveauProc, "");
 				NouveauProc = 0;
 				pthread_mutex_unlock (&mutex);
@@ -183,9 +189,8 @@ void *FilePriorite ()
 		for (int i = 0; i < 5; ++i)
 			CursFileAttente[i] = 0;
 
-		fprintf(SortieAffichage, "\n...Calculating new priorities...\n");
+		fprintf(SortieAffichage, "\n...Calculating new priorities...\n\n");
 		RecalculerPriorite ();
-		fprintf(SortieAffichage, "Done!\n\n");
 	}
 
 } // FilePriorite ()
@@ -252,12 +257,13 @@ void RoundRobin (unsigned Priorite)
 		{
 			pthread_mutex_lock (&mutex);
 
-			fprintf (SortieAffichage, "Process(es) %sconsidered.\n", ListeNouveauProc);
+			if (strcmp (ListeNouveauProc, "") != 0)
+				fprintf (SortieAffichage, "! Process(es) %sconsidered.\n", ListeNouveauProc);
 			sprintf (ListeNouveauProc, "");
 
+			NouveauProc = 0;
 			if ( 0 != Priorite)
 			{
-				NouveauProc = 0;
 				pthread_mutex_unlock (&mutex);
 				return;
 			}
